@@ -59,10 +59,11 @@ def linreg(X, y, reg=0.0):
 			1) use np.eye to create identity matrix
 			2) use np.linalg.solve to solve for W_opt
 	"""
-	identity = np.eye(y.size())
-	lambda_value = 0
+	n = X.shape[1]
+	identity = np.eye(n)
+	identity[0,0] = 0
 	X_T = X.transpose()
-	left_matrix = lambda_value * identity + np.matmul(X_T, X)
+	left_matrix = reg * identity + np.matmul(X_T, X)
 	right_matrix = np.matmul(X_T, y)
 	W_opt = np.linalg.solve(left_matrix, right_matrix)
 	return W_opt
@@ -80,7 +81,6 @@ def predict(W, X):
 	return X * W
 
 
-
 def find_RMSE(W, X, y):
 	"""	This function takes in three arguments:
 			1) W, a weight matrix with bias
@@ -89,9 +89,11 @@ def find_RMSE(W, X, y):
 
 		This function calculates and returns the root mean-squared error, RMSE
 	"""
-	RMSE = 0
-	for x_value in np.matmul(W, X):
-
+	prediction = predict(W, X)
+	difference = y - prediction
+	m = X.shape[0]
+	normalized_mse = np.linalg.norm(difference, 2) ** 2 / m
+	RMSE = np.sqrt(normalized_mse)
 	return RMSE
 
 
@@ -118,7 +120,15 @@ def RMSE_vs_lambda(X_train, y_train, X_val, y_val):
 	reg_list = []
 	W_list = []
 	"*** YOUR CODE HERE ***"
+	reg_list = np.random.uniform(0.0, 150.0, 150)
+	reg_list.sort()
 
+	for reg in reg_list:
+		W_list.append(linreg(X_train, y_train, reg))
+
+	for W_opt in W_list:
+		RMSE = find_RMSE(W_opt, X_val, y_val)
+		RMSE_list.append(RMSE)
 
 	"*** END YOUR CODE HERE ***"
 
@@ -137,7 +147,14 @@ def RMSE_vs_lambda(X_train, y_train, X_val, y_val):
 
 	# TODO: Find reg_opt, the regularization value that minimizes RMSE
 	"*** YOUR CODE HERE ***"
-	
+	min_RMSE_index = 0
+	min_RMSE = RMSE_list[0]
+
+	for index in range(len(RMSE_list)):
+		if RMSE_list[index] < min_RMSE:
+			min_RMSE_index = index
+			min_RMSE = RMSE_list[index]
+	reg_opt = reg_list[min_RMSE_index]
 
 	"*** END YOUR CODE HERE ***"
 	return reg_opt
@@ -165,7 +182,14 @@ def norm_vs_lambda(X_train, y_train, X_val, y_val):
 	W_list = []
 	norm_list = []
 	"*** YOUR CODE HERE ***"
-	
+	reg_list = np.random.uniform(0.0, 150.0, 150)
+	reg_list.sort()
+
+	for reg in reg_list:
+		W_list.append(linreg(X_train, y_train, reg))
+
+	for W_opt in W_list:
+		norm_list.append(np.linalg.norm(W_opt, 2))
 
 	"*** END YOUR CODE HERE ***"
 
@@ -203,8 +227,17 @@ def linreg_no_bias(X, y, reg=0.0):
 	# Find the numerical solution in part d
 	# TODO: Solve for W_opt, and b_opt
 	"*** YOUR CODE HERE ***"
-	
-
+	m = X.shape[0]
+	identity = np.eye(m)
+	ones_matrix = np.ones(m)
+	X_t = X.transpose()
+	base_matrix = np.matmul(X_t, identity - ones_matrix / m)
+	left_matrix = np.matmul(base_matrix, X)
+	right_matrix = np.matmul(base_matrix, y)
+	identity_left_matrix = np.eye(left_matrix.shape[0])
+	W_opt = np.linalg.solve(left_matrix + reg * identity_left_matrix, right_matrix)
+	right_matrix = np.matmul(X, W_opt)
+	b_opt = sum((y - right_matrix)) / m
 	"*** END YOUR CODE HERE ***"
 
 	# Benchmark report
@@ -247,8 +280,13 @@ def grad_descent(X_train, y_train, X_val, y_val, reg=0.0, lr_W=2.5e-12, \
 	# Please use the variable names: W (weights), W_grad (gradients of W),
 	# b (bias), b_grad (gradients of b)
 	"*** YOUR CODE HERE ***"
-	
-
+	# Note: I was confused on this section of the question,
+	# so I looked at the solution file for help.
+	# The next 4 lines are taken from the solution file.
+	W = np.zeros((n, 1))
+	b = 0.0
+	W_grad = np.ones_like(W)
+	b_grad = 1.0
 	"*** END YOUR CODE HERE ***"
 
 
@@ -275,14 +313,32 @@ def grad_descent(X_train, y_train, X_val, y_val, reg=0.0, lr_W=2.5e-12, \
 		and iter_num < max_iter:
 
 		"*** YOUR CODE HERE ***"
-		
+		# Note: I looked at the solution file for help on how to start this section, and
+		# I now understand the necessary equation for the gradients
+		training_RMSE = np.sqrt(np.linalg.norm((X_train @ W).reshape((-1, 1)) + b - y_train) ** 2 / m_train)
+		validation_RMSE = np.sqrt(np.linalg.norm((X_val @ W).reshape((-1, 1)) + b - y_val) ** 2 / m_val)
+		obj_train.append(training_RMSE)
+		obj_val.append(validation_RMSE)
 
+		X_train_tranpose = X_train.transpose()
+		identity = np.eye(n)
+		left_matrix = np.matmul(X_train_tranpose, X_train) + reg * identity
+		right_matrix = np.matmul(X_train_tranpose, b - y_train)
+
+		W_grad = (np.matmul(left_matrix, W) + right_matrix) / m_train
+
+		left = np.matmul(X_train, W)
+		numerator = sum(left) - sum(y_train) + b * m_train
+		b_grad = numerator / m_train
+
+		W -= lr_W * W_grad
+		b -= lr_b * b_grad
 		"*** END YOUR CODE HERE ***"
 
 		# print statements for debugging
 		if (iter_num + 1) % print_freq == 0:
 			print('-- Iteration{} - training rmse {: 4.4f} - gradient norm {: 4.4E}'.format(\
-				iter_num + 1, train_rmse, np.linalg.norm(W_grad)))
+				iter_num + 1, training_RMSE, np.linalg.norm(W_grad)))
 
 		# goes to next iteration
 		iter_num += 1
@@ -361,7 +417,13 @@ if __name__ == '__main__':
 	# 	1) Use np.ones / np.ones_like to create a column of ones
 	#	2) Use np.hstack to stack the column to the matrix
 	"*** YOUR CODE HERE ***"
-	
+	X_train_ones = np.ones_like(y_train)
+	X_val_ones = np.ones_like(y_val)
+	X_test_ones = np.ones_like(y_test)
+
+	X_train = np.hstack((X_train_ones, X_train))
+	X_val = np.hstack((X_val_ones, X_val))
+	X_test = np.hstack((X_test_ones, X_test))
 
 	"*** END YOUR CODE HERE ***"
 
@@ -432,7 +494,6 @@ if __name__ == '__main__':
 	# difference in weights
 	diff_W = np.linalg.norm(W_opt_2 -W_opt_1)
 	print('==> Difference in weights is {diff: 4.4E}'.format(diff=diff_W))
-
 
 
 	# PART E

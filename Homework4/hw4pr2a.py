@@ -445,13 +445,8 @@ def plot_description(X_train, y_train, X_test, y_test):
 
 	# TODO: Find the lambda, reg_opt, that maximizes accuracy
 	"*** YOUR CODE HERE ***"
-	accuracy_max_index = 0
-	accuracy_max = a_list[accuracy_max_index]
-	for i in range(len(a_list)):
-		if a_list[i] > accuracy_max:
-			accuracy_max_index = i
-			accuracy_max = a_list[accuracy_max_index]
-	reg_opt = reg_list[accuracy_max_index]
+	opt_index = np.argmax(a_list)
+	reg_opt = reg_list[opt_index]
 	"*** END YOUR CODE HERE ***"
 
 	return reg_opt

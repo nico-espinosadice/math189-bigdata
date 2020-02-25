@@ -122,7 +122,7 @@ def predict(X, W):
 	"*** YOUR CODE HERE ***"
 	mu = X @ W
 	numerator = np.exp(mu)
-	denominator = exp_mu.sum(axis=1).reshape(-1, 1)
+	denominator = numerator.sum(axis=1).reshape(-1, 1)
 	probability_matrix = numerator / denominator
 	y_pred = np.argmax(probability_matrix, axis=1).reshape(-1, 1)
 	"*** END YOUR CODE HERE ***"
@@ -175,8 +175,6 @@ def grad_descent(X, y, reg=0.0, lr=1e-5, eps=1e-6, max_iter=500, print_freq=20):
 	# Start iteration for gradient descent
 	iter_num = 0
 	t_start = time.time()
-
-	# TODO: run gradient descent algorithms
 
 	# HINT: Run the gradient descent algorithm followed steps below
 	#	1) Calculate the negative log likelihood at each iteration use function
@@ -256,7 +254,6 @@ def accuracy_vs_lambda(X_train, y_train_OH, X_test, y_test, lambda_list):
 
 		print('-- Accuracy is {:2.4f} for lambda = {:2.2f}'.format(accuracy, reg))
 
-
 	# Plot accuracy vs lambda
 	print('==> Printing accuracy vs lambda...')
 	plt.style.use('ggplot')
@@ -271,13 +268,8 @@ def accuracy_vs_lambda(X_train, y_train_OH, X_test, y_test, lambda_list):
 
 	# NOTE: use the variable given, reg_opt
 	"*** YOUR CODE HERE ***"
-	accuracy_max_index = 0
-	accuracy_max = a_list[accuracy_max_index]
-	for i in range(len(a_list)):
-		if a_list[i] > accuracy_max:
-			accuracy_max_index = i
-			accuracy_max = a_list[accuracy_max_index]
-	reg_opt = reg_list[accuracy_max_index]
+	opt_index = np.argmax(accu_list)
+	reg_opt = lambda_list[opt_index]
 	"*** END YOUR CODE HERE ***"
 
 	return reg_opt

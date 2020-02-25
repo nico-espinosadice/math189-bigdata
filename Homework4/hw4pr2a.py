@@ -70,11 +70,17 @@ def grad_logreg(X, y, W, reg=0.0):
 
 		NOTE: Please use the variable given for the gradient, grad.
 	"""
-	# TODO: Find the gradient of logistic regression with respect to W
 	"*** YOUR CODE HERE ***"
-	
-	
+
+	# Note: reg variable used in the code corresponds to the lambda variable in the 
+	# 	gradient of the log likelihood function
+	# Note: @ is the operator for matrix multiplication; should have the same functionality 
+	# 	as np.matmul(firstMatrix, secondMatrix) used in previous homeworks
+	sigma = sigmoid(X @ W) - y
+	grad = (X.transpose() @ sigma) + (reg * W)
+
 	"*** END YOUR CODE HERE ***"
+
 	return grad
 
 
@@ -99,11 +105,15 @@ def NLL(X, y, W, reg=0.0):
 
 		NOTE: please use the variable given for the final returned result, nll.
 	"""
-	# TODO: Find the negative log likelihood of logistic regression
 	"*** YOUR CODE HERE ***"
-
-
+	mu = sigmoid(X @ W)
+	firstTerm = y * np.log(mu)
+	secondTerm = (1-y) * np.log((1-mu))
+	summationTerm = firstTerm + secondTerm
+	adjustment = (reg / 2) * np.linalg.norm(W)**2
+	nll = -np.sum(summationTerm) + adjustment
 	"*** END YOUR CODE HERE ***"
+
 	return nll
 
 
@@ -136,9 +146,6 @@ def grad_descent(X, y, reg=0.0, lr=1e-4, eps=1e-6, max_iter=500, print_freq=20):
 	iter_num = 0
 	t_start = time.time()
 
-
-	# TODO: run gradient descent algorithms
-
 	# HINT: Run the gradient descent algorithm followed steps below
 	#	1) Calculate the negative log likelihood at each iteration and
 	#	   append the value to nll_list
@@ -154,8 +161,10 @@ def grad_descent(X, y, reg=0.0, lr=1e-4, eps=1e-6, max_iter=500, print_freq=20):
 	while iter_num < max_iter and np.linalg.norm(W_grad) > eps:
 
 		"*** YOUR CODE HERE ***"
-
-
+		nll = NLL(X, y, W, reg)
+		nll_list.append(nll)
+		W_grad = grad_logreg(X, y, W, reg)
+		W -= lr * W_grad
 		"*** END YOUR CODE HERE ***"
 
 		# Print statements for debugging
@@ -202,7 +211,15 @@ def newton_step(X, y, W, reg=0.0):
 	"""
 	# TODO: Find the change of the weight according Newton's methods
 	"*** YOUR CODE HERE ***"
+	mu = sigmoid(X @ W)
+	grad_W = grad_logreg(X, y, W, reg)
+	S = np.diag(np.squeeze(np.asarray(np.multiply(mu, 1. - mu))))
 
+	# np.eye returns identity matrix with the same number of rows
+	#	as X
+	adjustment = reg * np.eye(X.shape[1]) 
+	H = X.transpose() @ S @ X + adjustment
+	d = np.linalg.solve(H, -grad_W)
 
 	"*** END YOUR CODE HERE ***"
 	return d
@@ -248,7 +265,11 @@ def newton_method(X, y, reg=0.0, eps=1e-6, max_iter=20, print_freq=5):
 	while iter_num < max_iter and np.linalg.norm(step) > eps:
 
 		"*** YOUR CODE HERE ***"
+		nll = NLL(X, y, W, reg)
+		nll_list.append(nll)
 
+		W_grad = newton_step(X, y, W, reg)
+		W += W_grad
 
 		"*** END YOUR CODE HERE ***"
 
@@ -312,9 +333,38 @@ def get_description(X, y, W):
 	"""
 	# TODO: Find the accuracy, precision, recall, and f-1 score of the prediction
 	"*** YOUR CODE HERE ***"
+	numRows, numColumns = X.shape
+	y_prediction = predict(X, W)
+	count_correct = 0
+	count_true_1 = 0 
+	count_predict_1 = 0
+	total_predict_1 = 0
+	total_true_1 = 0
 
+	for i in range(numRows):
+		true = y.item(i)
+		prediction = y_prediction.item(i)
 
+		if true == 1:
+			total_true_1 += 1
+			if prediction == true:
+				count_predict_1 += 1
+
+		if prediction == 1:
+			total_predict_1 += 1
+			if true == prediction:
+				count_true_1 += 1
+
+		if true == prediction:
+			count_correct += 1
+
+	accuracy = count_correct / numRows
+	precision = count_true_1 / total_predict_1
+	recall = count_predict_1 / total_true_1
+
+	f1 = 2 * precision * recall / (precision + recall)
 	"*** END YOUR CODE HERE ***"
+
 	return accuracy, precision, recall, f1
 
 
@@ -346,8 +396,17 @@ def plot_description(X_train, y_train, X_test, y_test):
 	#	   obtained, and append those into the corresponding list
 
 	"*** YOUR CODE HERE ***"
+	reg_list = np.random.uniform(0.0, 30.0, 10)
+	reg_list.sort()
 
+	for reg in reg_list:
+		W_opt, nll_list = grad_descent(X_train, y_train, reg)
+		accuracy, precision, recall, f1 = get_description(X_test, y_test, W_opt)
 
+		a_list.append(accuracy)
+		p_list.append(precision)
+		r_list.append(recall)
+		f1_list.append(f1)
 	"*** END YOUR CODE HERE ***"
 
 
@@ -383,9 +442,15 @@ def plot_description(X_train, y_train, X_test, y_test):
 
 	# TODO: Find the lambda, reg_opt, that maximizes accuracy
 	"*** YOUR CODE HERE ***"
-
-
+	accuracy_max_index
+	accuracy_max = a_list[accuracy_max_index]
+	for i in range(a_list.size):
+		if a_list[i] > accuracy_max:
+			accuracy_max_index = i
+			accuracy_max = a_list[accuracy_max_index]
+	reg_opt = reg_list[accuracy_max_index]
 	"*** END YOUR CODE HERE ***"
+
 	return reg_opt
 
 

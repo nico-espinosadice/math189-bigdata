@@ -62,7 +62,7 @@ def NLL(X, y, W, reg=0.0):
 	"""
 	# TODO: Find the negative log likelihood for softmax regression
 	"*** YOUR CODE HERE ***"
-
+	
 
 	"*** END YOUR CODE HERE ***"
 	return NLL

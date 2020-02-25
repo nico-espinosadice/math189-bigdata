@@ -107,8 +107,8 @@ def NLL(X, y, W, reg=0.0):
 	"""
 	"*** YOUR CODE HERE ***"
 	mu = sigmoid(X @ W)
-	firstTerm = y * np.log(mu)
-	secondTerm = (1-y) * np.log((1-mu))
+	firstTerm = np.multiply(y, np.log(mu))
+	secondTerm = np.multiply(1.0 - y, np.log(1.0 - mu))
 	summationTerm = firstTerm + secondTerm
 	adjustment = (reg / 2) * np.linalg.norm(W)**2
 	nll = -np.sum(summationTerm) + adjustment
@@ -213,6 +213,9 @@ def newton_step(X, y, W, reg=0.0):
 	"*** YOUR CODE HERE ***"
 	mu = sigmoid(X @ W)
 	grad_W = grad_logreg(X, y, W, reg)
+
+	# I used the Numpy function (np.squeeze) below because I was dealing with a bug,
+	# 	and then looked at the suggested function in the solution file
 	S = np.diag(np.squeeze(np.asarray(np.multiply(mu, 1. - mu))))
 
 	# np.eye returns identity matrix with the same number of rows
@@ -251,8 +254,6 @@ def newton_method(X, y, reg=0.0, eps=1e-6, max_iter=20, print_freq=5):
 	# Start iteration for gradient descent
 	iter_num = 0
 	t_start = time.time()
-
-	# TODO: run gradient descent algorithms
 
 	# HINT: Run the gradient descent algorithm followed steps below
 	#	1) Calculate the negative log likelihood at each iteration and
@@ -348,21 +349,21 @@ def get_description(X, y, W):
 		if true == 1:
 			total_true_1 += 1
 			if prediction == true:
-				count_predict_1 += 1
+				count_true_1 += 1
 
 		if prediction == 1:
 			total_predict_1 += 1
 			if true == prediction:
-				count_true_1 += 1
+				count_predict_1 += 1
 
 		if true == prediction:
 			count_correct += 1
 
-	accuracy = count_correct / numRows
-	precision = count_true_1 / total_predict_1
-	recall = count_predict_1 / total_true_1
-
-	f1 = 2 * precision * recall / (precision + recall)
+	accuracy = 1.0 * count_correct / numRows
+	print("accuracy is", accuracy)
+	precision = 1.0 * count_predict_1 / total_predict_1
+	recall = 1.0 * count_true_1 / total_true_1
+	f1 = 2.0 * precision * recall / (precision + recall)
 	"*** END YOUR CODE HERE ***"
 
 	return accuracy, precision, recall, f1
@@ -396,11 +397,12 @@ def plot_description(X_train, y_train, X_test, y_test):
 	#	   obtained, and append those into the corresponding list
 
 	"*** YOUR CODE HERE ***"
-	reg_list = np.random.uniform(0.0, 30.0, 10)
+	reg_list = [0.0, 0.01, 0.1, 0.5, 1, 5, 10, 15, 20, 25, 30]
 	reg_list.sort()
 
-	for reg in reg_list:
-		W_opt, nll_list = grad_descent(X_train, y_train, reg)
+	for i in range(len(reg_list)):
+		print("reg is", reg_list[i])
+		W_opt, nll_list = grad_descent(X_train, y_train, reg_list[i])
 		accuracy, precision, recall, f1 = get_description(X_test, y_test, W_opt)
 
 		a_list.append(accuracy)
@@ -434,6 +436,7 @@ def plot_description(X_train, y_train, X_test, y_test):
 	plt.title('Testing descriptions')
 	plt.xlabel('regularization parameter')
 	plt.ylabel('Metric')
+	plt.xlim(0, 30)
 	plt.savefig('hw4pr2a_description.png', format = 'png')
 	plt.close()
 
@@ -442,9 +445,9 @@ def plot_description(X_train, y_train, X_test, y_test):
 
 	# TODO: Find the lambda, reg_opt, that maximizes accuracy
 	"*** YOUR CODE HERE ***"
-	accuracy_max_index
+	accuracy_max_index = 0
 	accuracy_max = a_list[accuracy_max_index]
-	for i in range(a_list.size):
+	for i in range(len(a_list)):
 		if a_list[i] > accuracy_max:
 			accuracy_max_index = i
 			accuracy_max = a_list[accuracy_max_index]

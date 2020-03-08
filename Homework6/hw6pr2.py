@@ -41,7 +41,7 @@ if __name__ == '__main__':
 		# 	Be sure to flatten the image with img.flatten() before doing the shuffling
 
 	"*** YOUR CODE HERE ***"
-
+	
 
 	"*** END YOUR CODE HERE ***"
 	# reshape the shuffled image

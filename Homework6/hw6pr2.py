@@ -24,56 +24,47 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy import ndimage
+import imageio
 import urllib
 
 if __name__ == '__main__':
 
 	# =============STEP 0: LOADING DATA=================
-	# NOTE: Be sure to install Pillow with "pip3 install Pillow"
 	print('==> Loading image data...')
+	# img_file = urllib.request.urlopen('http://i.imgur.com/X017qGH.jpg')
+	# img = imageio.imread(img_file.read())
+	# img_shape = img.shape
+	# print("shape of image:", img_shape)
+	# img.flatten()
 	img = ndimage.imread(urllib.request.urlopen('http://i.imgur.com/X017qGH.jpg'), flatten=True)
 
-	# TODO: Shuffle the image
-
-	# HINT:
-		# 1) Use np.random.shuffle(img) to shuffle an image img
-		# 2) np.random.shuffle() only shuffle along the major axis (row).
-		# 	Be sure to flatten the image with img.flatten() before doing the shuffling
-
 	"*** YOUR CODE HERE ***"
-	
-
+	shuffle_img = img.copy()
+	shuffle_img = shuffle_img.flatten()
+	np.random.shuffle(shuffle_img)
 	"*** END YOUR CODE HERE ***"
+
 	# reshape the shuffled image
 	shuffle_img = shuffle_img.reshape(img.shape)
+	print("shuffle_img shape:", shuffle_img.shape)
+	print("img shape:", img.shape)
 
 	# =============STEP 1: RUNNING SVD ON IMAGES=================
 	print('==> Running SVD on images...')
 
-	# TODO: SVD on img and shuffle_img
-
-	# HINT:
-	# 		1) Use np.linalg.svd() to perform singular value decomposition
-	# 		2) For the naming of variables, decompose img into U, S, V
-	# 		3) Decompose shuffle_img into U_s, S_s, V_s
-
 	"*** YOUR CODE HERE ***"
-
-
+	U, S, V = np.linalg.svd(img)
+	U_s, S_s, V_s = np.linalg.svd(shuffle_img)
 	"*** END YOUR CODE HERE ***"
 
 	# =============STEP 2: SINGULAR VALUE DROPOFF=================
 	print('==> Singular value dropoff plot...')
 	k = 100
 	plt.style.use('ggplot')
-	# TODO: Generate singular value dropoff plot
-
-	# NOTE:
-	# 		1) Make sure to generate lines with different colors or markers
 
 	"*** YOUR CODE HERE ***"
-
-
+	orig_S_plot = plt.plot(S[0:k], color = "purple")
+	shuf_S_plot = plt.plot(S_s[0:k], color = "pink")
 	"*** END YOUR CODE HERE ***"
 
 	plt.legend((orig_S_plot, shuf_S_plot), \
@@ -91,19 +82,32 @@ if __name__ == '__main__':
 	plt.axis('off')
 	plt.title('Original Image')
 
-	# TODO: Generate reconstruction images for each of the rank values
-
-	# HINT:
-	# 		1) Use plt.imshow() to display images
-	# 		2) Set cmap='Greys_r' in imshow() to display grey scale images
-
 	for index in range(len(rank_list)):
 		k = rank_list[index]
 		plt.subplot(2, 2, 2 + index)
 
 		"*** YOUR CODE HERE ***"
+		# Optimal reconstruction given by: X = USV^T (Murphy, Equation 12.59)
+		# We want to plot the reconstructed image for a given rank (k), so we
+		#	only take the first k columns of the matrix U so that we plot
+		#	exactly rank k. (The colums of U are the left singular vectors).
+		U_k = U[0:, 0:k]
 
+		# We know that S has the singular values on the main diagonal (given in Murphy 12.2.3)
+		# S has shape (499,), so we need to make it a diagonal matrix
+		#	i.e. make its shape (499, 499) so it has the singular values on the 
+		# 	main diagonal, as described in Murphy.
+		# Like for U_k, we want to limit our reconstruction image to be rank k
+		S_k = S[0:k]
+		S_k_diag = np.diag(S_k)
 
+		# In Murphy, Equation 12.59, we have V^T, but I ran into an error
+		#	when I used the transpose of V. 
+		# The columns of V are the right singular vectors
+		V_k = V[0:k, 0:]
+
+		reconstructed_image = U_k @ S_k_diag @ V_k
+		plt.imshow(reconstructed_image, cmap = 'Greys_r')
 		"*** END YOUR CODE HERE ***"
 
 		plt.title('Rank {} Approximation'.format(k))

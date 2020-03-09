@@ -25,7 +25,7 @@ Instead, to accomplish the task with their new method, they first parameterized 
 When the new algorithm was tested on a real application, it did significantly better than maximizing the log-likelihood using the gradient descent method.
 
 ### Algorithm and Code
-They implemented the algorithm for a recommendation system. Unfortunately, it is written in Matlab, so I was not able to get it to run on my computer. (The link to the code is given above). However, the algorithm is presented in pseudocode below.
+The authors implemented the algorithm for a recommendation system using Matlab. The file most pertinent to our class discussions is em.m (a Matlab file); it is responsible for implementing the expectation-maximization, and has functions to calculate the log-likelihood, etc. (The link to the code is given above). The algorithm is presented in pseudocode below.
 
 (Gillenwater, Kulesza, Fox, Taskar 2014):
 ![Algorithm from Paper](https://github.com/nico-espinosadice/math189-bigdata/blob/master/Homework6/EM_Paper_Algorithm.png)

@@ -22,7 +22,7 @@ Instead, to accomplish the task with their new method, they first parameterized 
 
 When the new algorithm was tested on a real application, it did significantly better than maximizing the log-likelihood using the gradient descent method.
 
-### Algorithm
+### Algorithm Pseudocode
 I was not able to find an implementation of code for this paper, but they did provide the algorithm in pseudocode, which I have pictured below.
 
 (Gillenwater, Kulesza, Fox, Taskar 2014):

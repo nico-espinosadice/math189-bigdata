@@ -3,9 +3,9 @@ Nico Espinosa Dice
 
 March 9, 2020
 
-## Expectation-Maximization for Learning Determinantal Point Processes
+## Paper: Expectation-Maximization for Learning Determinantal Point Processes (2014)
 ### Authors: 
-Jennifer Gillenwater, Alex Kulesza, Emily Fox, Ben Taskar
+Jennifer Gillenwater, Alex Kulesza, Emily Fox, and Ben Taskar
 
 ### Link:
 Paper: https://arxiv.org/pdf/1411.1088v1.pdf

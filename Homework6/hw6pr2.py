@@ -31,11 +31,6 @@ if __name__ == '__main__':
 
 	# =============STEP 0: LOADING DATA=================
 	print('==> Loading image data...')
-	# img_file = urllib.request.urlopen('http://i.imgur.com/X017qGH.jpg')
-	# img = imageio.imread(img_file.read())
-	# img_shape = img.shape
-	# print("shape of image:", img_shape)
-	# img.flatten()
 	img = ndimage.imread(urllib.request.urlopen('http://i.imgur.com/X017qGH.jpg'), flatten=True)
 
 	"*** YOUR CODE HERE ***"

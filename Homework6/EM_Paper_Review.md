@@ -26,3 +26,4 @@ When the new algorithm was tested on a real application, it did significantly be
 I was not able to find an implementation of code for this paper, but they did provide the algorithm in pseudocode, which I have pictured below.
 
 (Gillenwater, Kulesza, Fox, Taskar 2014):
+![Algorithm from Paper](https://github.com/nico-espinosadice/math189-bigdata/blob/master/Homework6/EM_Paper_Algorithm.png)

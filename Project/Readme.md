@@ -18,8 +18,8 @@ Outputs of the program's results are located in the Results folder.
 ## Presentation
 The midterm and final presentations are located in the Presentations folder.
 
-## Saved Models
-The Saved Models folder contains saved files of trained SVMs that can be used to easily access a working SVM model.
-
 ## Writing
 The Writing folder contains the final paper, the midterm paper, and the project proposal.
+
+## Saved Models
+The Saved Models folder contains saved files of trained SVMs that can be used to easily access a working SVM model.

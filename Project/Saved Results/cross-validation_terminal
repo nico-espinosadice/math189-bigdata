@@ -1,0 +1,48 @@
+Last login: Mon May  4 11:05:27 on ttys001
+You have mail.
+(base) new-host-5:Code nicoespinosadice$ ipython
+Python 3.7.6 (default, Jan  8 2020, 13:42:34) 
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.11.1 -- An enhanced Interactive Python. Type '?' for help.
+
+In [1]: 1e-3 + 2                                             
+Out[1]: 2.001
+
+In [2]: run svm                                              
+
+In [3]: svm = SVM("rbf")                                     
+
+In [4]: svm.kernel                                           
+Out[4]: 'rbf'
+
+In [5]: svm.crossValidateRBF()                               
+beginning preprocessing
+finished preprocessing
+got lists
+made parameters
+executed randomized search
+fitted
+score 0.6469845069486003
+{'kernel': 'rbf', 'gamma': 0.0001, 'C': 1}
+
+In [6]: run svm                                              
+
+In [7]: svm = SVM("rbf")                                     
+
+In [8]: svm.kernel                                           
+Out[8]: 'rbf'
+
+In [9]: svm.crossValidateRBF()                               
+beginning preprocessing
+finished preprocessing
+got lists
+made parameters
+executed randomized search
+fitted
+score 0.8313293253173013
+{'kernel': 'rbf', 'gamma': 2, 'C': 512}
+
+In [10]:  
+
+
+                                                             

@@ -1,5 +1,5 @@
 # Biometric Authentication of Smartphone Users with Support Vector Machines
-**Math189R - Midterm Project**  
+**Math189R - Final Project**  
 Nico Espinosa Dice  
 *April, 2020*
 

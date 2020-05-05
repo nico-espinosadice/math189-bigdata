@@ -1,7 +1,7 @@
 # Biometric Authentication of Smartphone Users with Support Vector Machines
 **Math189R - Final Project**  
 Nico Espinosa Dice  
-*April, 2020*
+*May, 2020*
 
 ## Code
 The code for this project is available in the Code folder in the file svm.py. Additionally, there is a Jupyter Notebook file that was used for exploratory data analysis.
